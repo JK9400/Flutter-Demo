@@ -1,117 +1,138 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Flutter code sample for [AppBar].
+void main() {
+  runApp(MyApp());
+}
 
-List<String> titles = <String>[
-  'Activity',
-  'Add Activity',
-];
-
-void main() => runApp(const AppBarApp());
-
-class AppBarApp extends StatelessWidget {
-  const AppBarApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'CFaaL',
       theme: ThemeData(
-          colorSchemeSeed: const Color.fromARGB(255, 0, 89, 255),
-          useMaterial3: true),
-      home: const AppBarExample(),
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
     );
   }
 }
 
-class AppBarExample extends StatelessWidget {
-  const AppBarExample({super.key});
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  String? _selectedDropdownValue;
+
+  // single-assignment: a final variable or field must have an initializer. Once assigned a value, a final variable's value cannot be changed
+  final TextEditingController _firstTextController = TextEditingController();
+  final TextEditingController _secondTextController = TextEditingController();
+  final List<List<String>> _tableData = [];
+
+  final List<String> _dropdownItems = ['Run', 'Walk', 'Weight Lifting', 'Swim'];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color oddItemColor = colorScheme.primary.withOpacity(0.05);
-    final Color evenItemColor = colorScheme.primary.withOpacity(0.15);
-    const int tabsCount = 2;
-
-    return DefaultTabController(
-      initialIndex: 1,
-      length: tabsCount,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('CFaaL'),
-          notificationPredicate: (ScrollNotification notification) {
-            return notification.depth == 1;
-          },
-          scrolledUnderElevation: 4.0,
-          shadowColor: Theme.of(context).shadowColor,
-          bottom: TabBar(
-            tabs: <Widget>[
-              Tab(
-                text: titles[0],
-              ),
-              Tab(
-                text: titles[1],
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            const Center(
-              child: Text("Tab 1"),
-            ),
-
-            // Second tab
-            Center(
-              child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Center the column vertically
-                crossAxisAlignment: CrossAxisAlignment
-                    .center, // Center the children horizontally
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      // Define the action for the first button here
-                      print('Button 1 pressed');
-                    },
-                    child: const Text('Add activity'),
-                  ),
-                  const SizedBox(
-                      height: 100,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Name',
-                        ),
-                      )), // Add spacing between buttons
-                  const SizedBox(
-                    height: 100,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Activity',
-                      ),
-                    ),
-                  ), // Add spacing between buttons
-                  SizedBox(
-                      height: 100,
-                      child: TextField(
-                        decoration: const InputDecoration(
-                            labelText: "Minutes",
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 100.0,
-                            ),
-                            border: OutlineInputBorder()),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ], // Only numbers can be entered
-                      )), // Add spacing between buttons
-                ],
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('CFaaL'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Activities'),
+            Tab(text: 'Add Activity'),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // Activity Tab
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Name')),
+                  DataColumn(label: Text('Activity')),
+                  DataColumn(label: Text('Minutes')),
+                ],
+                rows: [], // Add rows here
+              ),
+            ),
+          ),
+          // Activity Table tab
+          Padding(
+            padding: const EdgeInsets.all(200.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextField(
+                  controller: _firstTextController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Name',
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                DropdownButtonFormField<String>(
+                  value: _selectedDropdownValue,
+                  hint: const Text('Activity'),
+                  items: _dropdownItems.map((String item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedDropdownValue = newValue;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
+                  controller: _secondTextController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Minutes',
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ], // Only numbers can be entered
+                ),
+                const SizedBox(height: 16.0),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Add Activity'),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
