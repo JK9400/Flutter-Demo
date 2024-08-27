@@ -26,15 +26,22 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class AddActivity {
+  String name;
+  String activity;
+  int minutes;
+  AddActivity(
+      {required this.name, required this.activity, required this.minutes});
+}
+
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String? _selectedDropdownValue;
 
-  // single-assignment: a final variable or field must have an initializer. Once assigned a value, a final variable's value cannot be changed
   final TextEditingController _firstTextController = TextEditingController();
   final TextEditingController _secondTextController = TextEditingController();
-  final List<List<String>> _tableData = [];
+  final List<AddActivity> _activities = []; // <-- List to manage activities
 
   final List<String> _dropdownItems = ['Run', 'Walk', 'Weight Lifting', 'Swim'];
 
@@ -50,30 +57,50 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
+  void _addActivity() {
+    final name = _firstTextController.text;
+    final activity = _selectedDropdownValue;
+    final minutes = int.tryParse(_secondTextController.text) ?? 0;
+
+    if (name.isNotEmpty && activity != null && minutes > 0) {
+      setState(() {
+        _activities
+            .add(AddActivity(name: name, activity: activity, minutes: minutes));
+      });
+
+      // Clear input fields
+      _firstTextController.clear();
+      _secondTextController.clear();
+      setState(() {
+        _selectedDropdownValue = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 200,
         centerTitle: true,
-        // title: const Text('CFaaL'),
         title: Image.asset(
           '../images/logo2.jpg',
           height: 200,
         ),
         bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'Activities'),
-              Tab(text: 'Add Activity'),
-            ],
-            indicatorColor: Color.fromARGB(252, 37, 101, 240),
-            labelColor: Color.fromARGB(252, 37, 101, 240)),
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Activities'),
+            Tab(text: 'Add Activity'),
+          ],
+          indicatorColor: Color.fromARGB(252, 37, 101, 240),
+          labelColor: Color.fromARGB(252, 37, 101, 240),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Activity Tab
+          // Activities Tab
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
@@ -84,35 +111,22 @@ class _MyHomePageState extends State<MyHomePage>
                   DataColumn(label: Text('Activity')),
                   DataColumn(label: Text('Minutes')),
                 ],
-                rows: const <DataRow>[
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Justin')),
-                      DataCell(Text('R6')),
-                      DataCell(Text('400,000')),
+                rows: _activities.map((activity) {
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(activity.name)),
+                      DataCell(Text(activity.activity)),
+                      DataCell(Text(activity.minutes.toString())),
                     ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Bryan')),
-                      DataCell(Text('R6')),
-                      DataCell(Text('5')),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Tye')),
-                      DataCell(Text('R6')),
-                      DataCell(Text('100,000')),
-                    ],
-                  )
-                ],
+                  );
+                }).toList(),
               ),
             ),
           ),
-          // Activity Table tab
+          // Add Activity Tab
           Padding(
-            padding: const EdgeInsets.all(200.0),
+            padding: const EdgeInsets.all(
+                20.0), // Adjusted padding for better layout
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -154,10 +168,10 @@ class _MyHomePageState extends State<MyHomePage>
                 const SizedBox(height: 16.0),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _addActivity,
                     child: const Text('Add Activity'),
                   ),
-                )
+                ),
               ],
             ),
           ),
