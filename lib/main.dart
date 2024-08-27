@@ -53,12 +53,13 @@ class _MyHomePageState extends State<MyHomePage>
       appBar: AppBar(
         title: const Text('CFaaL'),
         bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Activities'),
-            Tab(text: 'Add Activity'),
-          ],
-        ),
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'Activities'),
+              Tab(text: 'Add Activity'),
+            ],
+            indicatorColor: Color.fromARGB(252, 37, 101, 240),
+            labelColor: Color.fromARGB(252, 37, 101, 240)),
       ),
       body: TabBarView(
         controller: _tabController,
