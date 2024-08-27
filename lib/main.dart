@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('CFaaL'),
         bottom: TabBar(
             controller: _tabController,
@@ -75,7 +76,29 @@ class _MyHomePageState extends State<MyHomePage>
                   DataColumn(label: Text('Activity')),
                   DataColumn(label: Text('Minutes')),
                 ],
-                rows: [], // Add rows here
+                rows: const <DataRow>[
+                  DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text('Justin')),
+                      DataCell(Text('R6')),
+                      DataCell(Text('400,000')),
+                    ],
+                  ),
+                  DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text('Bryan')),
+                      DataCell(Text('R6')),
+                      DataCell(Text('5')),
+                    ],
+                  ),
+                  DataRow(
+                    cells: <DataCell>[
+                      DataCell(Text('Tye')),
+                      DataCell(Text('R6')),
+                      DataCell(Text('100,000')),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
