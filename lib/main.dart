@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Flutter code sample for [AppBar].
 
@@ -56,64 +57,61 @@ class AppBarExample extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            Center(
+            const Center(
               child: Text("Tab 1"),
             ),
 
             // Second tab
             Center(
-              child: Text("Tab 2"),
+              child: Column(
+                mainAxisAlignment:
+                    MainAxisAlignment.center, // Center the column vertically
+                crossAxisAlignment: CrossAxisAlignment
+                    .center, // Center the children horizontally
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      // Define the action for the first button here
+                      print('Button 1 pressed');
+                    },
+                    child: const Text('Add activity'),
+                  ),
+                  const SizedBox(
+                      height: 100,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                        ),
+                      )), // Add spacing between buttons
+                  const SizedBox(
+                    height: 100,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Activity',
+                      ),
+                    ),
+                  ), // Add spacing between buttons
+                  SizedBox(
+                      height: 100,
+                      child: TextField(
+                        decoration: const InputDecoration(
+                            labelText: "Minutes",
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 100.0,
+                            ),
+                            border: OutlineInputBorder()),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // Only numbers can be entered
+                      )), // Add spacing between buttons
+                ],
+              ),
             ),
           ],
         ),
-        // body: Center(
-        //   child: Column(
-        //     mainAxisAlignment:
-        //         MainAxisAlignment.center, // Center the column vertically
-        //     crossAxisAlignment:
-        //         CrossAxisAlignment.center, // Center the children horizontally
-        //     children: <Widget>[
-        //       ElevatedButton(
-        //         onPressed: () {
-        //           // Define the action for the first button here
-        //           print('Button 1 pressed');
-        //         },
-        //         child: const Text('Add activity'),
-        //       ),
-        //       const SizedBox(
-        //           height: 100,
-        //           child: TextField(
-        //             decoration: InputDecoration(
-        //               labelText: 'Name',
-        //             ),
-        //           )), // Add spacing between buttons
-        //       const SizedBox(
-        //         height: 100,
-        //         child: TextField(
-        //           decoration: InputDecoration(
-        //             labelText: 'Activity',
-        //           ),
-        //         ),
-        //       ), // Add spacing between buttons
-        //       SizedBox(
-        //           height: 100,
-        //           child: TextField(
-        //             decoration: const InputDecoration(
-        //                 labelText: "Minutes",
-        //                 contentPadding: EdgeInsets.symmetric(
-        //                   horizontal: 100.0,
-        //                 ),
-        //                 border: OutlineInputBorder()),
-        //             keyboardType: TextInputType.number,
-        //             inputFormatters: <TextInputFormatter>[
-        //               FilteringTextInputFormatter.digitsOnly
-        //             ], // Only numbers can be entered
-        //           )), // Add spacing between buttons
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }
