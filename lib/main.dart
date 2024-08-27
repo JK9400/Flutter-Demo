@@ -11,8 +11,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CFaaL',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.blue,
+          ))),
       home: MyHomePage(),
     );
   }
@@ -51,7 +54,13 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CFaaL'),
+        toolbarHeight: 200,
+        centerTitle: true,
+        // title: const Text('CFaaL'),
+        title: Image.asset(
+          '../images/logo2.jpg',
+          height: 200,
+        ),
         bottom: TabBar(
             controller: _tabController,
             tabs: const [
@@ -107,9 +116,6 @@ class _MyHomePageState extends State<MyHomePage>
                       _selectedDropdownValue = newValue;
                     });
                   },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
